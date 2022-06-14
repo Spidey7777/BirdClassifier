@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BirdClassifier</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_main">Find Bird</string>
+    <string name="text_bird_name">Bird Name:</string>
+    <string name="button_reset">Reset</string>
+    <string name="button_back">Back</string>
+</resources>
