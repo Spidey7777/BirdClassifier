@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -20,7 +22,7 @@ import org.tensorflow.lite.support.image.TensorImage
 class MainFragment : Fragment() {
 
     companion object {
-        val IMAGE_REQUEST_CODE = 100
+//        val IMAGE_REQUEST_CODE = 100
     }
 
     private lateinit var binding: FragmentMainBinding
@@ -36,20 +38,18 @@ class MainFragment : Fragment() {
 
         binding.mainButton.visibility = View.INVISIBLE
 
+        val getImage = registerForActivityResult(
+            ActivityResultContracts.GetContent(),
+            ActivityResultCallback {
+                binding.birdImage.setImageURI(it)
+                binding.mainButton.visibility = View.VISIBLE
+                imageUri = it
+            }
+        )
+
         binding.birdImage.setOnClickListener {
-//            var resultLauncher = registerForActivityResult(
-//                ActivityResultContracts.StartActivityForResult()) { result ->
-//                if (result.resultCode == Activity.RESULT_OK) {
-////                println(result)
-//                }
-//            }
-            ////////////////////////////////////
-//            val intent = Intent(context, )
-
-//            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-//            startActivityForResult(gallery, IMAGE_REQUEST_CODE)
-
-            pickImageGallery()
+//            pickImageGallery()
+            getImage.launch("image/*")
         }
 
         binding.mainButton.setOnClickListener { view: View ->
@@ -58,35 +58,35 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    private fun pickImageGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_REQUEST_CODE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-            imageUri = data?.data!!
-            //buttons
-            binding.birdImage.setImageURI(imageUri)
-            binding.mainButton.visibility = View.VISIBLE
-            val btmp_img = UriToBitmap(imageUri)
-            val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
-            val tnsr_img = TensorImage.fromBitmap(btmp_img)
-            val outputs = model?.process(tnsr_img)
-            val probability = outputs?.probabilityAsCategoryList
-            if (model != null) {
-                model.close()
-            }
-//            probability?.toTypedArray()?.sort()
-//            model?.close()
-
-//            val index: Int = 0
-//            val max: Float? = probability?.get(0)?.score
-//            binding.birdName.text = max.toString()
-        }
-    }
+//    private fun pickImageGallery() {
+//        val intent = Intent(Intent.ACTION_PICK)
+//        intent.type = "image/*"
+//        startActivityForResult(intent, IMAGE_REQUEST_CODE)
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+//            imageUri = data?.data!!
+//            //buttons
+//            binding.birdImage.setImageURI(imageUri)
+//            binding.mainButton.visibility = View.VISIBLE
+//            val btmp_img = UriToBitmap(imageUri)
+//            val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
+//            val tnsr_img = TensorImage.fromBitmap(btmp_img)
+//            val outputs = model?.process(tnsr_img)
+//            val probability = outputs?.probabilityAsCategoryList
+//            if (model != null) {
+//                model.close()
+//            }
+////            probability?.toTypedArray()?.sort()
+////            model?.close()
+//
+////            val index: Int = 0
+////            val max: Float? = probability?.get(0)?.score
+////            binding.birdName.text = max.toString()
+//        }
+//    }
 
     private fun UriToBitmap(uri: Uri) : Bitmap {
         val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, imageUri)

@@ -1,7 +1,9 @@
 package com.example.birdclassifier
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,9 @@ import androidx.navigation.Navigation
 import com.example.birdclassifier.databinding.FragmentPredictionBinding
 
 class PredictionFragment : Fragment() {
+
+    private lateinit var args: PredictionFragmentArgs
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -19,8 +24,8 @@ class PredictionFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentPredictionBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_prediction, container, false)
 
-        val args = PredictionFragmentArgs.fromBundle(requireArguments())
-            binding.birdImage.setImageURI(args.imageUri.toUri())
+        args = PredictionFragmentArgs.fromBundle(requireArguments())
+        binding.birdImage.setImageURI(args.imageUri.toUri())
 
         binding.lifecycleOwner = this
 
@@ -28,5 +33,10 @@ class PredictionFragment : Fragment() {
             Navigation.findNavController(view).navigate(PredictionFragmentDirections.actionPredictionFragment2ToMainFragment())
         }
         return binding.root
+    }
+
+    private fun UriToBitmap(uri: Uri) : Bitmap {
+        val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, args.imageUri.toUri())
+        return  img_btmp
     }
 }
