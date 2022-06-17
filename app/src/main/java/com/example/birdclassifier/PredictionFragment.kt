@@ -1,6 +1,9 @@
 package com.example.birdclassifier
 
+import android.app.SearchManager
+import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -8,7 +11,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import com.example.birdclassifier.databinding.FragmentPredictionBinding
@@ -26,6 +31,8 @@ class PredictionFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentPredictionBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_prediction, container, false)
 
+        binding.resultText.isClickable = false
+
         args = PredictionFragmentArgs.fromBundle(requireArguments())
 
         val uriImage: Uri = args.imageUri.toUri()
@@ -37,13 +44,27 @@ class PredictionFragment : Fragment() {
         val birdName = getBirdName(bitmapImage)
 
         binding.resultText.text = birdName
+        binding.resultText.isClickable = true
+        binding.resultText.underline()
 
         binding.lifecycleOwner = this
 
         binding.backButton.setOnClickListener { view: View ->
             Navigation.findNavController(view).navigate(PredictionFragmentDirections.actionPredictionFragment2ToMainFragment())
         }
+
+        binding.resultText.setOnClickListener { view: View ->
+            val intent = Intent(Intent.ACTION_WEB_SEARCH)
+            val term = binding.resultText.text.toString()
+            intent.putExtra(SearchManager.QUERY, term)
+            startActivity(intent)
+        }
+
         return binding.root
+    }
+
+    private fun TextView.underline() {
+        paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
     private fun getBirdName(image: Bitmap) : String? {
