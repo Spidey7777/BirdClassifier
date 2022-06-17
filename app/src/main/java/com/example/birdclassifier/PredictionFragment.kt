@@ -28,11 +28,15 @@ class PredictionFragment : Fragment() {
 
         args = PredictionFragmentArgs.fromBundle(requireArguments())
 
-        val uri_image: Uri = args.imageUri.toUri()
+        val uriImage: Uri = args.imageUri.toUri()
 
-        binding.birdImage.setImageURI(uri_image)
+        binding.birdImage.setImageURI(uriImage)
 
-        val bitmap_image = uriToBitmap(uri_image)
+        val bitmapImage = uriToBitmap(uriImage)
+
+        val birdName = getBirdName(bitmapImage)
+
+        binding.resultText.text = birdName
 
         binding.lifecycleOwner = this
 
@@ -42,14 +46,28 @@ class PredictionFragment : Fragment() {
         return binding.root
     }
 
-    private fun getBirdName(image: Bitmap) {
+    private fun getBirdName(image: Bitmap) : String? {
         val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
-        val tensor_image = TensorImage.fromBitmap(image)
-        val outputs = model?.process(tensor_image)
+        val tensorImage = TensorImage.fromBitmap(image)
+        val outputs = model?.process(tensorImage)
         val probability = outputs?.probabilityAsCategoryList
+
+        var max = 0.0F
+        var index = 0
+        if (probability != null) {
+            for (i in probability) {
+                if (max < i.score) {
+                    max = i.score
+                    index = probability.indexOf(i)
+                }
+            }
+        }
         if (model != null) {
             model.close()
         }
+
+        val output = probability?.get(index)?.label
+        return output
     }
 
     private fun uriToBitmap(uri: Uri) : Bitmap {
