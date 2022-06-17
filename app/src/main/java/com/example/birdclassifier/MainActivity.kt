@@ -11,7 +11,6 @@ import com.example.birdclassifier.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    val IMAGE_REQUEST_CODE = 100
     private lateinit var viewModel: BirdViewModel
     private lateinit var imageUri: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,14 +19,4 @@ class MainActivity : AppCompatActivity() {
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(BirdViewModel::class.java)
     }
-
-
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-//            imageUri = data?.data!!
-//            viewModel.imageUri = imageUri
-//        }
-//    }
 }

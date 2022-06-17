@@ -12,6 +12,8 @@ import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import com.example.birdclassifier.databinding.FragmentPredictionBinding
+import com.example.birdclassifier.ml.LiteModelAiyVisionClassifierBirdsV13
+import org.tensorflow.lite.support.image.TensorImage
 
 class PredictionFragment : Fragment() {
 
@@ -25,7 +27,12 @@ class PredictionFragment : Fragment() {
         val binding: FragmentPredictionBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_prediction, container, false)
 
         args = PredictionFragmentArgs.fromBundle(requireArguments())
-        binding.birdImage.setImageURI(args.imageUri.toUri())
+
+        val uri_image: Uri = args.imageUri.toUri()
+
+        binding.birdImage.setImageURI(uri_image)
+
+        val bitmap_image = uriToBitmap(uri_image)
 
         binding.lifecycleOwner = this
 
@@ -35,7 +42,17 @@ class PredictionFragment : Fragment() {
         return binding.root
     }
 
-    private fun UriToBitmap(uri: Uri) : Bitmap {
+    private fun getBirdName(image: Bitmap) {
+        val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
+        val tensor_image = TensorImage.fromBitmap(image)
+        val outputs = model?.process(tensor_image)
+        val probability = outputs?.probabilityAsCategoryList
+        if (model != null) {
+            model.close()
+        }
+    }
+
+    private fun uriToBitmap(uri: Uri) : Bitmap {
         val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, args.imageUri.toUri())
         return  img_btmp
     }
