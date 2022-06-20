@@ -21,10 +21,6 @@ import org.tensorflow.lite.support.image.TensorImage
 
 class MainFragment : Fragment() {
 
-    companion object {
-//        val IMAGE_REQUEST_CODE = 100
-    }
-
     private lateinit var binding: FragmentMainBinding
     private lateinit var imageUri: Uri
 
@@ -32,7 +28,6 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
@@ -48,7 +43,6 @@ class MainFragment : Fragment() {
         )
 
         binding.birdImage.setOnClickListener {
-//            pickImageGallery()
             getImage.launch("image/*")
         }
 
@@ -56,40 +50,5 @@ class MainFragment : Fragment() {
             Navigation.findNavController(view).navigate(MainFragmentDirections.actionMainFragmentToPredictionFragment2(imageUri.toString()))
         }
         return binding.root
-    }
-
-//    private fun pickImageGallery() {
-//        val intent = Intent(Intent.ACTION_PICK)
-//        intent.type = "image/*"
-//        startActivityForResult(intent, IMAGE_REQUEST_CODE)
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-//            imageUri = data?.data!!
-//            //buttons
-//            binding.birdImage.setImageURI(imageUri)
-//            binding.mainButton.visibility = View.VISIBLE
-//            val btmp_img = UriToBitmap(imageUri)
-//            val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
-//            val tnsr_img = TensorImage.fromBitmap(btmp_img)
-//            val outputs = model?.process(tnsr_img)
-//            val probability = outputs?.probabilityAsCategoryList
-//            if (model != null) {
-//                model.close()
-//            }
-////            probability?.toTypedArray()?.sort()
-////            model?.close()
-//
-////            val index: Int = 0
-////            val max: Float? = probability?.get(0)?.score
-////            binding.birdName.text = max.toString()
-//        }
-//    }
-
-    private fun UriToBitmap(uri: Uri) : Bitmap {
-        val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, imageUri)
-        return  img_btmp
     }
 }

@@ -22,7 +22,6 @@ import kotlin.coroutines.coroutineContext
 class BirdViewModel(val application: Application, val args: Uri): ViewModel() {
 
     fun getBirdName(image: Bitmap) : String? {
-//        val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
         val model = LiteModelAiyVisionClassifierBirdsV13.newInstance(application)
         val tensorImage = TensorImage.fromBitmap(image)
         val outputs = model.process(tensorImage)

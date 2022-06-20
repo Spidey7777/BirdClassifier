@@ -29,7 +29,6 @@ class PredictionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val binding: FragmentPredictionBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_prediction, container, false)
         args = PredictionFragmentArgs.fromBundle(requireArguments())
 
@@ -68,37 +67,4 @@ class PredictionFragment : Fragment() {
     private fun TextView.underline() {
         paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
-
-//    private fun TextView.underline() {
-//        paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
-//    }
-//
-//    private fun getBirdName(image: Bitmap) : String? {
-//        val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
-//        val tensorImage = TensorImage.fromBitmap(image)
-//        val outputs = model?.process(tensorImage)
-//        val probability = outputs?.probabilityAsCategoryList
-//
-//        var max = 0.0F
-//        var index = 0
-//        if (probability != null) {
-//            for (i in probability) {
-//                if (max < i.score) {
-//                    max = i.score
-//                    index = probability.indexOf(i)
-//                }
-//            }
-//        }
-//        if (model != null) {
-//            model.close()
-//        }
-//
-//        val output = probability?.get(index)?.label
-//        return output
-//    }
-//
-//    private fun uriToBitmap(uri: Uri) : Bitmap {
-//        val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, args.imageUri.toUri())
-//        return  img_btmp
-//    }
 }

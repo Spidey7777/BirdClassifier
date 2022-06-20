@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-//        viewModel = ViewModelProvider(this).get(BirdViewModel::class.java)
     }
 }
