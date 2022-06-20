@@ -17,6 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_main)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        viewModel = ViewModelProvider(this).get(BirdViewModel::class.java)
+//        viewModel = ViewModelProvider(this).get(BirdViewModel::class.java)
     }
 }

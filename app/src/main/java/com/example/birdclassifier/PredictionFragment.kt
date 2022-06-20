@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.birdclassifier.databinding.FragmentPredictionBinding
 import com.example.birdclassifier.ml.LiteModelAiyVisionClassifierBirdsV13
@@ -30,18 +31,19 @@ class PredictionFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding: FragmentPredictionBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_prediction, container, false)
+        args = PredictionFragmentArgs.fromBundle(requireArguments())
+
+        val viewModel = ViewModelProvider(this, BirdViewModel.Factory(activity?.application!!, args.imageUri.toUri())).get(BirdViewModel::class.java)
 
         binding.resultText.isClickable = false
 
-        args = PredictionFragmentArgs.fromBundle(requireArguments())
 
         val uriImage: Uri = args.imageUri.toUri()
 
         binding.birdImage.setImageURI(uriImage)
 
-        val bitmapImage = uriToBitmap(uriImage)
-
-        val birdName = getBirdName(bitmapImage)
+        val bitmapImage = viewModel.uriToBitmap(uriImage)
+        val birdName = viewModel.getBirdName(bitmapImage)
 
         binding.resultText.text = birdName
         binding.resultText.isClickable = true
@@ -67,32 +69,36 @@ class PredictionFragment : Fragment() {
         paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
-    private fun getBirdName(image: Bitmap) : String? {
-        val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
-        val tensorImage = TensorImage.fromBitmap(image)
-        val outputs = model?.process(tensorImage)
-        val probability = outputs?.probabilityAsCategoryList
-
-        var max = 0.0F
-        var index = 0
-        if (probability != null) {
-            for (i in probability) {
-                if (max < i.score) {
-                    max = i.score
-                    index = probability.indexOf(i)
-                }
-            }
-        }
-        if (model != null) {
-            model.close()
-        }
-
-        val output = probability?.get(index)?.label
-        return output
-    }
-
-    private fun uriToBitmap(uri: Uri) : Bitmap {
-        val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, args.imageUri.toUri())
-        return  img_btmp
-    }
+//    private fun TextView.underline() {
+//        paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
+//    }
+//
+//    private fun getBirdName(image: Bitmap) : String? {
+//        val model = context?.let { LiteModelAiyVisionClassifierBirdsV13.newInstance(it) }
+//        val tensorImage = TensorImage.fromBitmap(image)
+//        val outputs = model?.process(tensorImage)
+//        val probability = outputs?.probabilityAsCategoryList
+//
+//        var max = 0.0F
+//        var index = 0
+//        if (probability != null) {
+//            for (i in probability) {
+//                if (max < i.score) {
+//                    max = i.score
+//                    index = probability.indexOf(i)
+//                }
+//            }
+//        }
+//        if (model != null) {
+//            model.close()
+//        }
+//
+//        val output = probability?.get(index)?.label
+//        return output
+//    }
+//
+//    private fun uriToBitmap(uri: Uri) : Bitmap {
+//        val img_btmp = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, args.imageUri.toUri())
+//        return  img_btmp
+//    }
 }
